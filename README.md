@@ -1,86 +1,102 @@
+<div align="center">
+
 # ⚡ bE-More: Company Energetic Efficiency System
 
-![bE-More architecture](https://github.com/user-attachments/assets/7b5e7096-b4c3-451a-82bb-c95ca022e853)
+### Fullstack IoT & Local AI Architecture for Workspace Optimization
 
-> **Fullstack IoT solution utilizing Arduino, ThingsBoard, and Local AI (Mistral:7b) to optimize workspace energy consumption.**
+<img src="https://github.com/user-attachments/assets/7b5e7096-b4c3-451a-82bb-c95ca022e853" alt="bE-More architecture" width="80%" />
+<br><br>
 
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Arduino](https://img.shields.io/badge/Arduino-00979D?style=for-the-badge&logo=Arduino&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Ollama](https://img.shields.io/badge/Ollama-Local_AI-333333?style=for-the-badge&logo=ollama&logoColor=white)
-![ThingsBoard](https://img.shields.io/badge/ThingsBoard-IoT_Core-29B6F6?style=for-the-badge&logo=thingsboard&logoColor=white)
+![Java](https://img.shields.io/badge/Java_23-Controller-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Arduino](https://img.shields.io/badge/Arduino-Edge_Hardware-00979D?style=for-the-badge&logo=Arduino&logoColor=white)
+![Python](https://img.shields.io/badge/Python-AI_Bridge-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Ollama](https://img.shields.io/badge/Ollama-Local_LLM-333333?style=for-the-badge&logo=ollama&logoColor=white)
+![ThingsBoard](https://img.shields.io/badge/ThingsBoard-IoT_Platform-29B6F6?style=for-the-badge&logo=thingsboard&logoColor=white)
+
+</div>
 
 ---
 
 ## 📖 Overview
-**bE-More** is a semi-automatic system designed to increase energy efficiency in working environments. It combines **embedded hardware** for real-time sensing, a **Java Dashboard** for management, and **Local Generative AI** for data analysis.
+
+**bE-More** is an advanced, semi-autonomous IoT system engineered to optimize energy consumption within enterprise working environments. The architecture integrates **embedded hardware** for real-time telemetry, a **Java-based Dashboard** for centralized management, and **Local Generative AI** for predictive data analysis.
 
 ### ✨ Key Features
-* **IoT & MQTT:** Real-time communication between sensors and the cloud.
-* **Smart Automation:** Automatic shutdown of lights when natural light is sufficient (`> 450` value).
-* **Privacy-First AI:** Uses a local instance of **Mistral:7b** (via Ollama) to analyze consumption trends without sending data to external APIs.
-* **Hybrid Interface:** A Java 23 application combining a WebView dashboard and a console-based AI assistant.
+* **📡 IoT & MQTT Telemetry:** Real-time, low-latency communication between edge sensors and the centralized ThingsBoard cloud instance.
+* **⚙️ Smart Automation:** Rule-based environmental control (e.g., automatic lighting shutdown when ambient natural light exceeds a `> 450` threshold).
+* **🔒 Privacy-First AI Analytics:** Utilizes a locally hosted instance of **Mistral:7b** (via Ollama) to analyze consumption trends and detect anomalies, ensuring sensitive corporate data never leaves the internal network.
+* **🖥️ Hybrid Interface:** A robust Java 23 application that seamlessly embeds a visual web dashboard alongside a console-based AI assistant.
 
 ---
 
-## 📐 Hardware & Wiring
-The physical layer consists of an Arduino board communicating via MQTT Protocol.
+## 📐 Hardware Architecture
 
-![circuit](https://github.com/user-attachments/assets/bca92431-5202-4c54-b24f-d2595b3f0679)
+The physical layer relies on an Arduino microcontroller handling sensor data acquisition and MQTT transmission.
 
-### Logic Table
-The system manages the environment based on sensor inputs and button states:
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/bca92431-5202-4c54-b24f-d2595b3f0679" alt="Circuit Wiring Diagram" width="70%" />
+</div>
 
-| Input / Condition | State | Action Triggered |
+### Edge Logic & Actuation
+The embedded system manages the environment based on the following deterministic rules:
+
+| Input Sensor / Actuator | State | System Action |
 | :--- | :--- | :--- |
-| **Button "AUTO" (Pin 2)** | Pressed | Toggles **Auto Mode**. Activates Buzzer & Status LED. |
-| **Button "LED" (Pin 1)** | Pressed | Manually toggles Main LEDs (Pin 5). |
-| **Light Sensor (A3)** | `> 450` & `Auto Mode ON` | **Auto-Shutdown:** Turns OFF Main LEDs to save energy. |
+| **"AUTO" Button (Pin 2)** | Pressed | Toggles **Autonomous Mode**. Engages status LED and confirmation Buzzer. |
+| **"LED" Button (Pin 1)** | Pressed | Manual override to toggle Main Workspace LEDs (Pin 5). |
+| **Photoresistor (A3)** | `> 450` + `Auto Mode ON` | **Energy Saver:** Automatically powers down Main LEDs to reduce consumption. |
 
 ---
 
-## 🧠 Software Architecture & AI
-The project integrates multiple layers of technology:
+## 🧠 Software Stack & AI Integration
 
-### 1. Java Desktop App (Controller)
-Built with **Java 23**, acting as the central hub:
-* **WebViewer:** Embeds the ThingsBoard dashboard (port 8080) for visual data monitoring.
-* **Console Bridge:** Connects to the Python backend to trigger AI analysis.
+The project features a decoupled, multi-tier software architecture:
 
-### 2. Python AI Analyzer (Intelligence)
-A Python script that interfaces with a local LLM:
-1.  **Fetches Data:** Retrieves historical telemetry from ThingsBoard.
-2.  **Processes:** Sends formatted data prompts to **Ollama (Mistral:7b)**.
-3.  **Predicts:** Returns efficiency trends and anomaly detection to the user console.
+### 1. The Controller (Java Desktop App)
+Developed in **Java 23**, this application acts as the central operations hub:
+* **WebView Integration:** Natively embeds the local ThingsBoard dashboard (port 8080) for real-time data visualization.
+* **Process Bridging:** Manages the lifecycle and communication with the Python-based AI backend via console streams.
+
+### 2. The Intelligence (Python + Local LLM)
+A Python service acting as the middleware between the IoT data and the Generative AI:
+1.  **Data Ingestion:** Fetches historical telemetry and state changes from the ThingsBoard API.
+2.  **Prompt Engineering:** Formats the raw time-series data into contextual prompts optimized for **Ollama (Mistral:7b)**.
+3.  **Inference:** The LLM processes the data locally to identify inefficiencies, predict trends, and return actionable energy-saving insights directly to the Java console.
 
 ---
 
-## 🚀 Setup & Installation
+## 🚀 Setup & Deployment
 
 ### Prerequisites
 * [Java JDK 23](https://www.oracle.com/java/technologies/downloads/)
-* [ThingsBoard CE](https://thingsboard.io/) (running on `localhost:8080`)
-* [Ollama](https://ollama.com/) with Mistral model:
+* [ThingsBoard CE](https://thingsboard.io/) (configured on `localhost:8080`)
+* [Ollama](https://ollama.com/) with the Mistral model installed:
     ```bash
     ollama pull mistral
     ```
 
-### Quick Start
-1.  **Hardware:** Flash the provided sketch to your Arduino and wire components as per the diagram.
-2.  **Backend:** Configure your MQTT Device in ThingsBoard.
-3.  **AI Service:** Start the local model server:
+### Quick Start Guide
+1.  **Hardware Provisioning:** Wire the components according to the schematic and flash the provided C++ sketch to the Arduino.
+2.  **IoT Platform:** Configure the MQTT Device profile and dashboards within your ThingsBoard instance.
+3.  **Initialize AI Service:** Start the local Ollama inference server:
     ```bash
     ollama serve
     ```
-4.  **Run the App:** Compile and run the Java application.
+4.  **Launch the Hub:** Compile and execute the Java application to monitor and optimize your environment.
 
 ---
 
-## 📚 Documentation
-For detailed step-by-step guides, please refer to the **[Project Wiki](../../wiki)**:
-* [📄 Extended Hardware Guide](../../wiki/Hardware-Wiring)
-* [📄 Full Software Architecture](../../wiki/Software-Architecture)
-* [🇮🇹 Descrizione in Italiano](../../wiki/Italian-Description)
+## 📚 Documentation & Deep Dive
+
+For detailed wiring schematics, full architectural diagrams, and step-by-step guides, please refer to the **[Project Wiki](../../wiki)**:
+
+* [📄 Extended Hardware & Wiring Guide](../../wiki/Hardware-Wiring)
+* [📄 Full Software Architecture & API Spec](../../wiki/Software-Architecture)
+* [🇮🇹 Documentazione in Italiano](../../wiki/Italian-Description)
 
 ---
-*Created by [GiZano](https://github.com/GiZano)*
+<div align="center">
+
+**Architected and Developed by [GiZano](https://giovanni-zanotti.is-a.dev)**
+
+</div>
